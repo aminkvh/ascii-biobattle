@@ -8,9 +8,6 @@ An animated, procedural ASCII art battle between futuristic AI robots and mediev
 
 ### 1. Download the Binary
 Visit the [GitHub Releases](https://github.com/aminkvh/ascii-biobattle/releases) page and download the appropriate file for your platform:
-*   **Windows**: `ascii-biobattle_amd64.scr` (native screensaver) or `ascii-biobattle_windows_amd64.exe` (run in terminal)
-*   **Linux**: `ascii-biobattle_linux_amd64` (Intel/AMD) or `ascii-biobattle_linux_arm64` (ARM64)
-*   **macOS**: `ascii-biobattle_mac_amd64` (Intel) or `ascii-biobattle_mac_arm64` (Apple Silicon)
 
 ### 2. Configure as a Screensaver
 
