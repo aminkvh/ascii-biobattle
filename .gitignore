@@ -3,7 +3,12 @@ screensaver
 screensaver.exe
 screensaver.scr
 screensaver_mac
+ascii-biobattle
+ascii-biobattle.exe
+ascii-biobattle.scr
+ascii-biobattle_mac
 build/
+dist/
 
 # Local custom Go environment
 .go/

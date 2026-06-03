@@ -1,4 +1,4 @@
-module screensaver
+module github.com/aminkvh/ascii-biobattle
 
 go 1.24.0
 
