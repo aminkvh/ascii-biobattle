@@ -22,40 +22,32 @@ Windows natively supports `.scr` screensavers:
 </details>
 
 <details>
-<summary><b>🐧 Linux Setup (X11 / xscreensaver / Custom Shortcut)</b></summary>
+<summary><b>🐧 Linux Setup (Recommended: xscreensaver)</b></summary>
 
-#### A. Classic Setup via `xscreensaver` (X11)
-For Linux systems using X11, `xscreensaver` is the most common way to run custom screensavers:
-1. Download `ascii-biobattle_linux_amd64` and make it executable:
+For Linux systems, using `xscreensaver` is the recommended method. It automatically handles launching the screensaver on idle, locking the screen upon movement, and supports multiple monitors out of the box (no custom keyboard shortcuts needed).
+
+1. Install `xscreensaver`:
+   ```bash
+   sudo apt install xscreensaver xscreensaver-gl
+   ```
+2. Download the binary `ascii-biobattle_linux_amd64` (or build it from source) and make it executable:
    ```bash
    chmod +x ascii-biobattle_linux_amd64
    sudo mv ascii-biobattle_linux_amd64 /usr/local/bin/ascii-biobattle
    ```
-2. Edit your `~/.xscreensaver` configuration file. Find the `programs:` section and add this line:
+3. Initialize the configuration:
+   - Run `xscreensaver-demo` in your terminal to start the daemon and generate the configuration file.
+4. Edit the configuration file `~/.xscreensaver`. Find the `programs:` section and add this line to register the screensaver:
    ```text
    "ASCII Biobattle"  /usr/local/bin/ascii-biobattle --theme night \n\
    ```
-3. Run `xscreensaver-demo` and select "ASCII Biobattle" from the list.
-*(Note: If you are using Wayland/swayidle, you can configure your idle daemon to launch a fullscreen terminal running the binary, e.g., `alacritty -e ascii-biobattle --fullscreen`)*
+5. Choose the screensaver:
+   - Run `xscreensaver-demo` again and select **ASCII Biobattle** from the list.
+   - (Optional) Under the **Advanced** tab, check the Multi-Monitor settings to display the screensaver on all screens.
+6. Auto-start on login:
+   - Open **Startup Applications** in Ubuntu, add a new entry with the command `xscreensaver -nosplash`.
 
-#### B. GNOME / Ubuntu Lock Screen Setup
-Since default Ubuntu/GNOME does not support custom third-party screensavers out of the box, you can choose one of the following setups to lock your screen:
-
-##### 1. Lock screen with xscreensaver
-If you installed `xscreensaver` (via the steps above), open `xscreensaver-demo` and check the **Lock Screen After** checkbox. Moving the mouse will automatically stop the battle and prompt for your password.
-
-##### 2. Direct Keyboard Shortcut with Auto-Lock (e.g. `Ctrl + Alt + K`)
-To start the screensaver instantly and lock the workstation when you exit it:
-1. Copy the binary:
-   ```bash
-   sudo cp ./ascii-biobattle /usr/local/bin/ascii-biobattle
-   ```
-2. Go to **Settings** -> **Keyboard** -> **Keyboard Shortcuts** -> **View and Customise Shortcuts** -> **Custom Shortcuts** -> **Add Shortcut (+)**.
-3. Fill in:
-   *   **Name**: `ASCII Biobattle Screensaver`
-   *   **Command**: `bash -c "gnome-terminal --full-screen -- /usr/local/bin/ascii-biobattle; dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock"`
-   *   **Shortcut**: Press a shortcut key combination (e.g., `Ctrl + Alt + K` or `Super + Alt + S`). *Note: Standard `Ctrl + K` is often reserved by GNOME or web browsers for internal actions and might not trigger globally.*
-4. Press your shortcut anytime to trigger it. When you press `Ctrl + C` or close the terminal, GNOME will immediately lock your screen.
+*(Note: If you are using Wayland/swayidle, you can configure your idle daemon to launch a fullscreen terminal running the binary instead: `alacritty -e ascii-biobattle --fullscreen`)*
 
 </details>
 
@@ -115,5 +107,16 @@ If you have Go installed (v1.24+) and want to build the executable yourself:
        ```bash
        GOOS=windows GOARCH=amd64 go build -o ascii-biobattle.scr .
        ```
+
+</details>
+
+<details>
+<summary><b>🖥️ Multi-Monitor Support</b></summary>
+
+Since `ascii-biobattle` runs inside a terminal emulator, it relies on the operating system's screensaver manager to handle multi-monitor layouts:
+
+*   **Linux (`xscreensaver`)**: Supports multiple monitors out of the box. Open `xscreensaver-demo`, go to the **Advanced** tab, and under **Multi-Monitor Settings**, select **"Display screensaver on all screens"**.
+*   **Windows**: Windows natively runs screensavers on your primary monitor. To span across multiple monitors or run separate instances, you can use a screensaver wrapper utility (like *ScreenSaver Commander*).
+*   **macOS**: Screensaver wrappers (like *ScriptSaver* or *SaveScreenie*) include configuration options to run the screensaver script/command on all active displays.
 
 </details>
