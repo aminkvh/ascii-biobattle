@@ -34,6 +34,29 @@ For Linux systems using X11, `xscreensaver` is the most common way to run custom
 3. Run `xscreensaver-demo` and select "ASCII Biobattle" from the list.
 *(Note: If you are using Wayland/swayidle, you can configure your idle daemon to launch a fullscreen terminal running the binary, e.g., `alacritty -e ascii-biobattle --fullscreen`)*
 
+<details>
+<summary><b>🔒 GNOME / Ubuntu Lock Screen Setup & Keyboard Shortcut (Ctrl+K)</b></summary>
+
+Since default Ubuntu/GNOME does not support custom third-party screensavers out of the box, you can choose one of the following setups:
+
+##### A. Lock screen with xscreensaver
+If you installed `xscreensaver` (via the steps above), open `xscreensaver-demo` and check the **Lock Screen After** checkbox. Moving the mouse will automatically stop the battle and prompt for your password.
+
+##### B. Direct Keyboard Shortcut (Ctrl+K) with Auto-Lock
+To start the screensaver instantly and lock the workstation when you exit it:
+1. Copy the binary:
+   ```bash
+   sudo cp ./ascii-biobattle /usr/local/bin/ascii-biobattle
+   ```
+2. Go to **Settings** -> **Keyboard** -> **Keyboard Shortcuts** -> **View and Customise Shortcuts** -> **Custom Shortcuts** -> **Add Shortcut (+)**.
+3. Fill in:
+   *   **Name**: `ASCII Biobattle Screensaver`
+   *   **Command**: `bash -c "gnome-terminal --full-screen -- /usr/local/bin/ascii-biobattle; dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock"`
+   *   **Shortcut**: Press `Ctrl + K` to bind it.
+4. Press `Ctrl + K` anytime to trigger it. When you press `Ctrl + C` or close the terminal, GNOME will immediately lock your screen.
+
+</details>
+
 #### macOS
 macOS requires a wrapper utility to run terminal programs as screensavers:
 1. Download `ascii-biobattle_mac_arm64` (or `amd64`) and make it executable:
