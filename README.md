@@ -1,6 +1,6 @@
 # ASCII Biobattle Screensaver
 
-An animated, procedural ASCII art battle between futuristic AI robots and medieval knights. Features a dynamic starry night sky, swaying grass, reflective water lakes, smooth AI-controlled combat, and periodic biophysics-themed sky flashes (DNA helices, proteins, and biplanes with nerdy biophysics slogans).
+An animated, procedural ASCII art battle between futuristic AI robots and medieval knights. Don't leave your workstation without entertainment at night!
 
 ---
 
