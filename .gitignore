@@ -1,0 +1,22 @@
+# Compiled binaries
+screensaver
+screensaver.exe
+screensaver.scr
+screensaver_mac
+build/
+
+# Local custom Go environment
+.go/
+
+# IDEs/Editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+.DS_Store
+Thumbs.db
