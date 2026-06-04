@@ -1,14 +1,6 @@
 # ASCII Biobattle Screensaver
 
-An animated, procedural ASCII art battle between futuristic AI robots and medieval knights. Rendered at a smooth 60 FPS using OpenGL/DirectX/Metal.
-
----
-
-## 🚀 Key Features
-- **Native Graphical Window**: Rendered as a native graphics canvas via Ebitengine, eliminating terminal emulator size and compatibility bugs.
-- **Continuous Multi-Monitor Support**: Spans all monitors seamlessly with synchronization of a single battle across displays.
-- **Cross-Platform**: Natively compiled for Linux, Windows, and macOS.
-- **Screen Locking**: Integrated support for locking your workstation when exiting the screensaver.
+An animated, procedural ASCII art battle between futuristic AI robots and medieval knights. Don't leave your monitor empty at wrok!
 
 ---
 
