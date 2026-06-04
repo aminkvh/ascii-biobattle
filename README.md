@@ -27,12 +27,15 @@ Because modern graphical engines clash with `xscreensaver`'s antiquated X11 wind
    ```bash
    sudo apt install xautolock
    ```
-2. **Configure the lock script**:
-   * Open `ascii-biobattle-lock.sh` and make sure `BINARY` points to your compiled executable (e.g. `./build/ascii-biobattle`).
+2. **Install the binary and lock script** to a system location:
+   ```bash
+   sudo cp ascii-biobattle /usr/local/bin/
+   sudo cp ascii-biobattle-lock.sh /usr/local/bin/
+   sudo chmod +x /usr/local/bin/ascii-biobattle /usr/local/bin/ascii-biobattle-lock.sh
+   ```
 3. **Test the script**:
    ```bash
-   chmod +x ascii-biobattle-lock.sh
-   ./ascii-biobattle-lock.sh
+   ascii-biobattle-lock.sh
    ```
    *The screensaver will launch across all monitors sorted left-to-right. Move the mouse or press any key to exit and trigger the system lock screen.*
 4. **Auto-start on Login**:
@@ -40,7 +43,7 @@ Because modern graphical engines clash with `xscreensaver`'s antiquated X11 wind
    * Click **Add**.
    * Fill out the fields:
      * **Name**: `ASCII Biobattle Screensaver`
-     * **Command**: `xautolock -time 1 -locker "./ascii-biobattle-lock.sh" -detectsleep`
+     * **Command**: `xautolock -time 1 -locker "ascii-biobattle-lock.sh" -detectsleep`
      * **Comment**: `Launch screensaver after 1 minute of idle time`
    * Click **Save**.
 

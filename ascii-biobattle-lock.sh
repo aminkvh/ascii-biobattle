@@ -2,8 +2,14 @@
 # ascii-biobattle-lock.sh
 # Spawns one instance per monitor, all sharing the same world via seed + viewport.
 
-BINARY="/media/amin/10TB_2/WORK/screensaver/ascii-biobattle"
-[ -z "$DISPLAY" ] && export DISPLAY=:1
+# Resolve binary relative to this script — no hardcoded paths
+SCRIPT_DIR="$(cd "$(dirname "$(realpath "$0")")" && pwd)"
+BINARY="$SCRIPT_DIR/ascii-biobattle"
+
+# Auto-detect DISPLAY if not set (common when called from xautolock)
+if [ -z "$DISPLAY" ]; then
+    export DISPLAY=$(who | grep -oP '\(:\d+\)' | head -1 | tr -d '()' || echo ":0")
+fi
 
 # Generate a shared random seed so all monitors simulate the same world
 SEED=$RANDOM$RANDOM
