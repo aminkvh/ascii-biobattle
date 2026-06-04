@@ -18,22 +18,27 @@ jobs:
           - os: ubuntu-latest
             goos: linux
             goarch: amd64
+            cgo: 1
             name: ascii-biobattle_linux_amd64
-          - os: ubuntu-latest
+          - os: ubuntu-24.04-arm
             goos: linux
             goarch: arm64
+            cgo: 1
             name: ascii-biobattle_linux_arm64
           - os: macos-latest
             goos: darwin
             goarch: amd64
+            cgo: 0
             name: ascii-biobattle_mac_amd64
           - os: macos-latest
             goos: darwin
             goarch: arm64
+            cgo: 0
             name: ascii-biobattle_mac_arm64
           - os: windows-latest
             goos: windows
             goarch: amd64
+            cgo: 0
             name: ascii-biobattle_windows_amd64.exe
 
     steps:
@@ -52,7 +57,7 @@ jobs:
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
-          CGO_ENABLED: 1
+          CGO_ENABLED: ${{ matrix.cgo }}
         run: go build -o dist/${{ matrix.name }} .
 
       - name: Upload Artifact
@@ -74,14 +79,14 @@ jobs:
         env:
           GOOS: windows
           GOARCH: amd64
-          CGO_ENABLED: 1
+          CGO_ENABLED: 0
         run: go build -o dist/ascii-biobattle_amd64.scr .
       
       - name: Build ARM64 SCR
         env:
           GOOS: windows
           GOARCH: arm64
-          CGO_ENABLED: 1
+          CGO_ENABLED: 0
         run: go build -o dist/ascii-biobattle_arm64.scr .
 
       - name: Upload Artifact AMD64
