@@ -3,6 +3,7 @@
 Your monitor has been standing there doing nothing for too long. It deserves conflict.
 
 ASCII Biobattle Screensaver turns your idle screen into a chaotic procedural battlefield where futuristic AI robots clash with medieval knights in glorious ASCII combat. While you are away pretending to be productive, tiny warriors and machines fight for control of your pixels across one monitor or many.
+
 ---
 
 ## 🏁 Setup & Installation
