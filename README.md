@@ -8,15 +8,19 @@ ASCII Biobattle Screensaver turns your idle screen into a chaotic procedural bat
 
 ## 🏁 Setup & Installation
 
-### 🪟 Windows Setup
+<details>
+<summary><b>🏁 Windows Setup</b></summary>
+
 Windows natively supports `.scr` screensavers:
 1. Copy `ascii-biobattle.scr` (or rename `ascii-biobattle.exe` to `ascii-biobattle.scr`) from the `build` folder.
 2. Right-click the `.scr` file and select **Install**. Alternatively, copy it directly into `C:\Windows\System32\`.
 3. The Screen Saver Settings dialog will open automatically. Here, you can select it, configure the idle timeout, and preview it.
 
----
+</details>
 
-### 🐧 Linux Setup (Multi-Monitor & Single Screen)
+<details>
+<summary><b>🐧 Linux Setup (Multi-Monitor & Single Screen)</b></summary>
+
 Because modern graphical engines clash with `xscreensaver`'s antiquated X11 window-ID embedding, the recommended approach on Linux is to use an idle locker like `xautolock` combined with our provided multi-monitor script.
 
 1. **Install xautolock**:
@@ -40,13 +44,17 @@ Because modern graphical engines clash with `xscreensaver`'s antiquated X11 wind
      * **Comment**: `Launch screensaver after 1 minute of idle time`
    * Click **Save**.
 
----
+</details>
 
-### 🍎 macOS Setup
+<details>
+<summary><b>🍎 macOS Setup</b></summary>
+
 macOS strictly requires screensavers to be compiled `.saver` bundles.
 1. Download a free screensaver wrapper like [SaverRunner](https://github.com/marnen/saverrunner).
 2. Configure it to point to your compiled `ascii-biobattle` binary.
 3. It will execute the graphical window fullscreen when the Mac goes idle.
+
+</details>
 
 ---
 
@@ -56,6 +64,9 @@ You can run the application directly:
 ```bash
 ./ascii-biobattle [flags]
 ```
+
+<details>
+<summary><b>⚙️ Command Line Flags & Multi-Monitor Configuration</b></summary>
 
 ### Available Flags
 *   `--theme`: Color theme (`night` [default], `day`)
@@ -71,9 +82,14 @@ You can run the application directly:
 *   `--world-cols`: Combined width of all monitor viewports (in columns)
 *   `--viewport-x`: Horizontal offset (in columns) for this monitor's viewport slice
 
+</details>
+
 ---
 
 ## 🛠️ How to Build from Source
+
+<details>
+<summary><b>🛠️ Build Instructions</b></summary>
 
 Ensure you have Go installed (v1.24+) and the necessary system development libraries for Ebitengine (on Linux: `xorg-dev`, `libgl1-mesa-dev`, `libxcursor-dev`, `libxrandr-dev`, `libxinerama-dev`, `libxi-dev`, `pkg-config`).
 
@@ -90,3 +106,5 @@ Ensure you have Go installed (v1.24+) and the necessary system development libra
    ```bash
    GOOS=darwin GOARCH=arm64 go build -o build/ascii-biobattle_mac .
    ```
+
+</details>
