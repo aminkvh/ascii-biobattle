@@ -1,122 +1,96 @@
 # ASCII Biobattle Screensaver
 
-An animated, procedural ASCII art battle between futuristic AI robots and medieval knights. Don't leave your workstation without entertainment at night!
+An animated, procedural ASCII art battle between futuristic AI robots and medieval knights. Rendered at a smooth 60 FPS using OpenGL/DirectX/Metal.
 
 ---
 
-## 🚀 Installation & Setup (Using Releases)
+## 🚀 Key Features
+- **Native Graphical Window**: Rendered as a native graphics canvas via Ebitengine, eliminating terminal emulator size and compatibility bugs.
+- **Continuous Multi-Monitor Support**: Spans all monitors seamlessly with synchronization of a single battle across displays.
+- **Cross-Platform**: Natively compiled for Linux, Windows, and macOS.
+- **Screen Locking**: Integrated support for locking your workstation when exiting the screensaver.
 
-### 1. Download the Binary
-Visit the [GitHub Releases](https://github.com/aminkvh/ascii-biobattle/releases) page and download the appropriate file for your platform:
+---
 
-### 2. Configure as a Screensaver
+## 🏁 Setup & Installation
 
-<details>
-<summary><b>🏁 Windows Setup</b></summary>
-
+### 🪟 Windows Setup
 Windows natively supports `.scr` screensavers:
-1. Download `ascii-biobattle_amd64.scr`.
+1. Copy `ascii-biobattle.scr` (or rename `ascii-biobattle.exe` to `ascii-biobattle.scr`) from the `build` folder.
 2. Right-click the `.scr` file and select **Install**. Alternatively, copy it directly into `C:\Windows\System32\`.
-3. The Screen Saver Settings dialog will open automatically, allowing you to select it and configure the idle timeout.
+3. The Screen Saver Settings dialog will open automatically. Here, you can select it, configure the idle timeout, and preview it.
 
-</details>
+---
 
-<details>
-<summary><b>🐧 Linux Setup (Recommended: xscreensaver)</b></summary>
+### 🐧 Linux Setup (Multi-Monitor & Single Screen)
+Because modern graphical engines clash with `xscreensaver`'s antiquated X11 window-ID embedding, the recommended approach on Linux is to use an idle locker like `xautolock` combined with our provided multi-monitor script.
 
-For Linux systems, using `xscreensaver` is the recommended method. It automatically handles launching the screensaver on idle, locking the screen upon movement, and supports multiple monitors out of the box (no custom keyboard shortcuts needed).
-
-1. Install `xscreensaver`:
+1. **Install xautolock**:
    ```bash
-   sudo apt install xscreensaver xscreensaver-gl
+   sudo apt install xautolock
    ```
-2. Download the binary `ascii-biobattle_linux_amd64` (or build it from source) and make it executable:
+2. **Configure the lock script**:
+   * Open `ascii-biobattle-lock.sh` and make sure `BINARY` points to your compiled executable (e.g. `/media/amin/10TB_2/WORK/screensaver/build/ascii-biobattle`).
+3. **Test the script**:
    ```bash
-   chmod +x ascii-biobattle_linux_amd64
-   sudo mv ascii-biobattle_linux_amd64 /usr/local/bin/ascii-biobattle
+   chmod +x ascii-biobattle-lock.sh
+   ./ascii-biobattle-lock.sh
    ```
-3. Initialize the configuration:
-   - Run `xscreensaver-demo` in your terminal to start the daemon and generate the configuration file.
-4. Edit the configuration file `~/.xscreensaver`. Find the `programs:` section and add this line to register the screensaver:
-   ```text
-   "ASCII Biobattle"  /usr/local/bin/ascii-biobattle --theme night \n\
-   ```
-5. Choose the screensaver:
-   - Run `xscreensaver-demo` again and select **ASCII Biobattle** from the list.
-   - (Optional) Under the **Advanced** tab, check the Multi-Monitor settings to display the screensaver on all screens.
-6. Auto-start on login:
-   - Open **Startup Applications** in Ubuntu, add a new entry with the command `xscreensaver -nosplash`.
+   *The screensaver will launch across all monitors sorted left-to-right. Move the mouse or press any key to exit and trigger the system lock screen.*
+4. **Auto-start on Login**:
+   * Add the following command to your system's **Startup Applications**:
+     ```bash
+     xautolock -time 5 -locker "/path/to/ascii-biobattle-lock.sh" -detectsleep
+     ```
+     *(This will activate the screensaver after 5 minutes of inactivity).*
 
-*(Note: If you are using Wayland/swayidle, you can configure your idle daemon to launch a fullscreen terminal running the binary instead: `alacritty -e ascii-biobattle --fullscreen`)*
+---
 
-</details>
+### 🍎 macOS Setup
+macOS strictly requires screensavers to be compiled `.saver` bundles.
+1. Download a free screensaver wrapper like [SaverRunner](https://github.com/marnen/saverrunner).
+2. Configure it to point to your compiled `ascii-biobattle` binary.
+3. It will execute the graphical window fullscreen when the Mac goes idle.
 
-<details>
-<summary><b>🍎 macOS Setup</b></summary>
-
-macOS requires a wrapper utility to run terminal programs as screensavers:
-1. Download `ascii-biobattle_mac_arm64` (or `amd64`) and make it executable:
-   ```bash
-   chmod +x ascii-biobattle_mac_arm64
-   ```
-2. Download a free screensaver wrapper like **ScriptSaver** or **SaveScreenie**.
-3. Configure the wrapper tool in your macOS Desktop & Screen Saver settings to point to your downloaded binary.
-
-</details>
 ---
 
 ## 💻 Running from Command Line
 
-You can run the application directly in any terminal:
+You can run the application directly:
 ```bash
-./ascii-biobattle_linux_amd64 [flags]
+./ascii-biobattle [flags]
 ```
 
-### Available Configuration Flags
-*   `--theme`: Color theme (`night` [default], `sunset`, `matrix`, `classic`)
-*   `--density`: Density of combat units on screen (`1` to `5`, default `3`)
-*   `--speed`: Simulation update ticks per second (default `30`)
+### Available Flags
+*   `--theme`: Color theme (`night` [default], `day`)
+*   `--density`: Density of combat units on screen (`1` to `80`, default `3`)
+*   `--speed`: Animation speed in FPS (`1` to `60`, default `30`)
+*   `--intensity`: Color intensity percent (`10` to `100`, default `100`)
+*   `--windowed`: Run in a window instead of fullscreen (recommended for development)
+*   `--list-monitors`: List connected monitors (useful for debugging multi-display setups)
+
+### Multi-Monitor Viewport Flags (Used by lock script)
+*   `--monitor`: Target monitor index (Ebitengine index) to launch fullscreen on
+*   `--seed`: Shared random seed so all processes run the identical battle
+*   `--world-cols`: Combined width of all monitor viewports (in columns)
+*   `--viewport-x`: Horizontal offset (in columns) for this monitor's viewport slice
 
 ---
 
-<details>
-<summary><b>🛠️ How to Build from Source</b></summary>
+## 🛠️ How to Build from Source
 
-If you have Go installed (v1.24+) and want to build the executable yourself:
+Ensure you have Go installed (v1.24+) and the necessary system development libraries for Ebitengine (on Linux: `xorg-dev`, `libgl1-mesa-dev`, `libxcursor-dev`, `libxrandr-dev`, `libxinerama-dev`, `libxi-dev`, `pkg-config`).
 
-1. Clone the repository:
+1. Build for the host system:
    ```bash
-   git clone https://github.com/aminkvh/ascii-biobattle.git
-   cd ascii-biobattle
+   go build -o build/ascii-biobattle .
    ```
-
-2. Build for your operating system:
-   *   **Linux**:
-       ```bash
-       go build -o ascii-biobattle .
-       ```
-   *   **macOS (Apple Silicon)**:
-       ```bash
-       GOOS=darwin GOARCH=arm64 go build -o ascii-biobattle_mac .
-       ```
-   *   **Windows (Standalone Executable)**:
-       ```bash
-       GOOS=windows GOARCH=amd64 go build -o ascii-biobattle.exe .
-       ```
-   *   **Windows (Screensaver binary)**:
-       ```bash
-       GOOS=windows GOARCH=amd64 go build -o ascii-biobattle.scr .
-       ```
-
-</details>
-
-<details>
-<summary><b>🖥️ Multi-Monitor Support</b></summary>
-
-Since `ascii-biobattle` runs inside a terminal emulator, it relies on the operating system's screensaver manager to handle multi-monitor layouts:
-
-*   **Linux (`xscreensaver`)**: Supports multiple monitors out of the box. Open `xscreensaver-demo`, go to the **Advanced** tab, and under **Multi-Monitor Settings**, select **"Display screensaver on all screens"**.
-*   **Windows**: Windows natively runs screensavers on your primary monitor. To span across multiple monitors or run separate instances, you can use a screensaver wrapper utility (like *ScreenSaver Commander*).
-*   **macOS**: Screensaver wrappers (like *ScriptSaver* or *SaveScreenie*) include configuration options to run the screensaver script/command on all active displays.
-
-</details>
+2. Cross-compile for Windows (Standalone and Screen Saver):
+   ```bash
+   GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -o build/ascii-biobattle.exe .
+   cp build/ascii-biobattle.exe build/ascii-biobattle.scr
+   ```
+3. Cross-compile for macOS (Apple Silicon):
+   ```bash
+   GOOS=darwin GOARCH=arm64 go build -o build/ascii-biobattle_mac .
+   ```
