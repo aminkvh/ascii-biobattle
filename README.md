@@ -28,7 +28,7 @@ Because modern graphical engines clash with `xscreensaver`'s antiquated X11 wind
    sudo apt install xautolock
    ```
 2. **Configure the lock script**:
-   * Open `ascii-biobattle-lock.sh` and make sure `BINARY` points to your compiled executable (e.g. `/media/amin/10TB_2/WORK/screensaver/build/ascii-biobattle`).
+   * Open `ascii-biobattle-lock.sh` and make sure `BINARY` points to your compiled executable (e.g. `./build/ascii-biobattle`).
 3. **Test the script**:
    ```bash
    chmod +x ascii-biobattle-lock.sh
@@ -40,7 +40,7 @@ Because modern graphical engines clash with `xscreensaver`'s antiquated X11 wind
    * Click **Add**.
    * Fill out the fields:
      * **Name**: `ASCII Biobattle Screensaver`
-     * **Command**: `xautolock -time 1 -locker "/media/amin/10TB_2/WORK/screensaver/ascii-biobattle-lock.sh" -detectsleep`
+     * **Command**: `xautolock -time 1 -locker "./ascii-biobattle-lock.sh" -detectsleep`
      * **Comment**: `Launch screensaver after 1 minute of idle time`
    * Click **Save**.
 
