@@ -41,7 +41,11 @@ const (
 )
 
 func NewWorld(w, h, density, intensity int, theme string) *World {
-	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
+	return NewWorldWithSeed(w, h, density, intensity, theme, time.Now().UnixNano())
+}
+
+func NewWorldWithSeed(w, h, density, intensity int, theme string, seed int64) *World {
+	rng := rand.New(rand.NewSource(seed))
 	world := &World{
 		width:     w,
 		height:    h,
