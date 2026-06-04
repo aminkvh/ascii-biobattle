@@ -38,11 +38,13 @@ Because modern graphical engines clash with `xscreensaver`'s antiquated X11 wind
    ```
    *The screensaver will launch across all monitors sorted left-to-right. Move the mouse or press any key to exit and trigger the system lock screen.*
 4. **Auto-start on Login**:
-   * Add the following command to your system's **Startup Applications**:
-     ```bash
-     xautolock -time 5 -locker "/path/to/ascii-biobattle-lock.sh" -detectsleep
-     ```
-     *(This will activate the screensaver after 5 minutes of inactivity).*
+   * Search for and open **Startup Applications** from your application menu (or run `gnome-session-properties` in the terminal).
+   * Click **Add**.
+   * Fill out the fields:
+     * **Name**: `ASCII Biobattle Screensaver`
+     * **Command**: `xautolock -time 1 -locker "/media/amin/10TB_2/WORK/screensaver/ascii-biobattle-lock.sh" -detectsleep`
+     * **Comment**: `Launch screensaver after 1 minute of idle time`
+   * Click **Save**.
 
 ---
 
