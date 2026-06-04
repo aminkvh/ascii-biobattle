@@ -30,18 +30,18 @@ jobs:
             cgo: 1
             name: ascii-biobattle_linux_arm64
 
-          # macOS Intel — Clang available, CGO required for Metal/OpenGL
-          - os: macos-13
+          # macOS Intel — Pure Go (no CGO needed)
+          - os: macos-latest
             goos: darwin
             goarch: amd64
-            cgo: 1
+            cgo: 0
             name: ascii-biobattle_mac_amd64
 
-          # macOS Apple Silicon — macos-15 runs on M1 runners
-          - os: macos-15
+          # macOS Apple Silicon — Pure Go (no CGO needed)
+          - os: macos-latest
             goos: darwin
             goarch: arm64
-            cgo: 1
+            cgo: 0
             name: ascii-biobattle_mac_arm64
 
           # Windows amd64 — pure Go (no CGO needed on Windows with Ebitengine)
