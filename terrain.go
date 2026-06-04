@@ -3,8 +3,6 @@ package main
 import (
 	"math"
 	"math/rand"
-
-	"github.com/gdamore/tcell/v2"
 )
 
 // Terrain generates and renders procedural hilly ground.
@@ -106,7 +104,7 @@ var terrainSurface = []rune{'_', '_', '~', '_'}
 var terrainFill = []rune{'.', ',', '\'', '`', '.', ',', 'w', 'v', 'W', 'V', '~', ';', 'w', 'v', '.', ','}
 var terrainSlope = []rune{'/', '\\', '|', '/'}
 
-func (t *Terrain) Draw(s tcell.Screen) {
+func (t *Terrain) Draw(s Screen) {
 
 	for x := 0; x < t.width; x++ {
 		surfY := t.heights[x]
@@ -115,19 +113,19 @@ func (t *Terrain) Draw(s tcell.Screen) {
 			earthWave := math.Sin(float64(x)*0.08 + float64(y)*0.15 - t.wavePhase*0.2)
 			brightnessMult := 1.0 + earthWave*0.12
 
-			var cSurfFG, cFillFG, cBgCol tcell.Color
+			var cSurfFG, cFillFG, cBgCol Color
 			if t.theme == "night" {
-				cSurfFG = tcell.NewRGBColor(int32(30*brightnessMult), int32(100*brightnessMult), int32(30*brightnessMult))
-				cFillFG = tcell.NewRGBColor(int32(20*brightnessMult), int32(60*brightnessMult), int32(20*brightnessMult))
-				cBgCol = tcell.NewRGBColor(int32(10*brightnessMult), int32(35*brightnessMult), int32(10*brightnessMult))
+				cSurfFG = NewRGBColor(int32(30*brightnessMult), int32(100*brightnessMult), int32(30*brightnessMult))
+				cFillFG = NewRGBColor(int32(20*brightnessMult), int32(60*brightnessMult), int32(20*brightnessMult))
+				cBgCol = NewRGBColor(int32(10*brightnessMult), int32(35*brightnessMult), int32(10*brightnessMult))
 			} else {
-				cSurfFG = tcell.NewRGBColor(int32(60*brightnessMult), int32(160*brightnessMult), int32(40*brightnessMult))
-				cFillFG = tcell.NewRGBColor(int32(45*brightnessMult), int32(110*brightnessMult), int32(30*brightnessMult))
-				cBgCol = tcell.NewRGBColor(int32(30*brightnessMult), int32(80*brightnessMult), int32(20*brightnessMult))
+				cSurfFG = NewRGBColor(int32(60*brightnessMult), int32(160*brightnessMult), int32(40*brightnessMult))
+				cFillFG = NewRGBColor(int32(45*brightnessMult), int32(110*brightnessMult), int32(30*brightnessMult))
+				cBgCol = NewRGBColor(int32(30*brightnessMult), int32(80*brightnessMult), int32(20*brightnessMult))
 			}
 
 			var ch rune
-			var fg tcell.Color
+			var fg Color
 			if y == surfY {
 				// surface line: pick between _ / \ based on slope
 				left := surfY
@@ -188,7 +186,7 @@ func (t *Terrain) Draw(s tcell.Screen) {
 				ch = terrainFill[idx]
 				fg = cFillFG
 			}
-			style := tcell.StyleDefault.Foreground(fg).Background(cBgCol)
+			style := StyleDefault.Foreground(fg).Background(cBgCol)
 			s.SetContent(x, y, ch, nil, style)
 		}
 	}

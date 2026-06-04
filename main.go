@@ -3,12 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
-	"os/exec"
 	"runtime"
 	"strings"
 
-	"github.com/gdamore/tcell/v2"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 var (
@@ -17,8 +17,6 @@ var (
 	flagIntensity = flag.Int("intensity", 100, "Color intensity percent (10-100)")
 	flagTheme     = flag.String("theme", "night", "Color theme: 'day' or 'night'")
 	flagHelp      = flag.Bool("help", false, "Show help")
-	// Internal flag used when we launch ourselves in a new terminal on Windows
-	flagRun = flag.Bool("run", false, "")
 )
 
 func main() {
@@ -27,13 +25,19 @@ func main() {
 		for _, arg := range os.Args[1:] {
 			switch strings.ToLower(strings.TrimLeft(arg, "/-")) {
 			case "s":
-				launchWindowsScreensaver()
+				// Start Fullscreen
+				flag.Parse()
+				runScreensaver(true)
 				return
 			case "c":
-				fmt.Println("ASCII Battle Screensaver — use --help for configuration options.")
+				// Configure
+				fmt.Println("ASCII Battle Screensaver — configuration not implemented natively yet.")
 				return
 			case "p":
-				// Preview: just run in current terminal
+				// Preview
+				flag.Parse()
+				runScreensaver(false)
+				return
 			}
 		}
 	}
@@ -43,7 +47,7 @@ func main() {
 	if *flagHelp {
 		fmt.Print(`ASCII Battle Screen Saver
 =========================
-A cross-platform terminal screensaver: medieval knights vs AI robots.
+A cross-platform native screensaver: medieval knights vs AI robots.
 
 Usage:
   screensaver [flags]
@@ -55,13 +59,12 @@ Flags:
   --theme STRING   'night' or 'day' (default 'night')
 
 Controls:
-  q / Esc / Ctrl+C   Exit
+  q / Esc   Exit
 
 Windows .scr arguments (used by Windows screensaver system):
-  /s    Start screensaver
-  /c    Configure (shows this help)
-  /p    Preview
-
+  /s    Start screensaver (fullscreen)
+  /c    Configure
+  /p    Preview (windowed)
 `)
 		return
 	}
@@ -85,49 +88,25 @@ Windows .scr arguments (used by Windows screensaver system):
 		*flagIntensity = 100
 	}
 
-	runScreensaver()
+	// By default, just run as a regular windowed app
+	// On Linux/Mac this allows it to be used as a standalone graphical app.
+	runScreensaver(false)
 }
 
-// launchWindowsScreensaver opens a new maximized terminal window
-// running this binary in screensaver mode.
-func launchWindowsScreensaver() {
-	exe, err := os.Executable()
-	if err != nil {
-		runScreensaver()
-		return
+func runScreensaver(fullscreen bool) {
+	app := NewApp(*flagFPS, *flagDensity, *flagIntensity, *flagTheme)
+	
+	ebiten.SetWindowTitle("ASCII Biobattle")
+	if fullscreen {
+		ebiten.SetFullscreen(true)
+	} else {
+		ebiten.SetWindowSize(800, 600)
+		ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	}
+	// Hide cursor so it feels like a real screensaver
+	ebiten.SetCursorMode(ebiten.CursorModeHidden)
 
-	// Try Windows Terminal first (wt.exe), then fall back to cmd.exe
-	cmd := exec.Command("wt.exe", "--maximized", "--", exe, "--run")
-	if err := cmd.Start(); err != nil {
-		cmd = exec.Command("cmd.exe", "/c", "start", "/max", "cmd", "/k", exe, "--run")
-		if err2 := cmd.Start(); err2 != nil {
-			// Last resort: just run in-process
-			runScreensaver()
-		}
+	if err := ebiten.RunGame(app); err != nil && err != ebiten.Termination {
+		log.Fatal(err)
 	}
-}
-
-func runScreensaver() {
-	s, err := tcell.NewScreen()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		os.Exit(1)
-	}
-	if err := s.Init(); err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		os.Exit(1)
-	}
-	defer func() {
-		s.Fini()
-		if r := recover(); r != nil {
-			fmt.Fprintf(os.Stderr, "panic: %v\n", r)
-		}
-	}()
-
-	s.SetStyle(tcell.StyleDefault.Background(tcell.ColorBlack))
-	s.Clear()
-
-	eng := NewEngine(s, *flagFPS, *flagDensity, *flagIntensity, *flagTheme)
-	eng.Run()
 }

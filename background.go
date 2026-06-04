@@ -3,15 +3,13 @@ package main
 import (
 	"math"
 	"math/rand"
-
-	"github.com/gdamore/tcell/v2"
 )
 
 // Star represents a single twinkling star in the sky.
 type Star struct {
 	X, Y  int
 	Char  rune
-	Color tcell.Color
+	Color Color
 	Phase int
 	Speed int // ticks per state change
 }
@@ -40,7 +38,7 @@ type BioFlash struct {
 // makeDNAHelix generates a proper animated ASCII double helix.
 // The two strands are positioned using cosine waves that are π apart,
 // so they cross in the middle, widen at the top/bottom.
-func makeDNAHelix(tick int) ([]string, tcell.Color, tcell.Color) {
+func makeDNAHelix(tick int) ([]string, Color, Color) {
 	const height = 14
 	const width = 15
 
@@ -110,11 +108,11 @@ func makeDNAHelix(tick int) ([]string, tcell.Color, tcell.Color) {
 		}
 		rows[row] = string(line)
 	}
-	return rows, tcell.NewRGBColor(0, 220, 200), tcell.NewRGBColor(0, 120, 255)
+	return rows, NewRGBColor(0, 220, 200), NewRGBColor(0, 120, 255)
 }
 
 // makeAminoChain generates a flowing amino acid / protein chain.
-func makeAminoChain(tick int) ([]string, tcell.Color, tcell.Color) {
+func makeAminoChain(tick int) ([]string, Color, Color) {
 	// Amino acid one-letter codes cycling through
 	aminos := "ACDEFGHIKLMNPQRSTVWY"
 	phase := tick / 5
@@ -130,7 +128,7 @@ func makeAminoChain(tick int) ([]string, tcell.Color, tcell.Color) {
 		"  ╰──┤ " + string(aminos[(phase+6)%len(aminos)]) + string(aminos[(phase+7)%len(aminos)]) + " ├──╯  ",
 		"     ╰─────╯     ",
 	}
-	return rows, tcell.NewRGBColor(255, 160, 50), tcell.NewRGBColor(180, 80, 0)
+	return rows, NewRGBColor(255, 160, 50), NewRGBColor(180, 80, 0)
 }
 
 // Slogan tier sizes — explicit so the weighted sampler below is correct.
@@ -181,7 +179,7 @@ var allSlogans = []string{
 
 // makeBannerPlane generates a detailed biplane towing a slogan banner.
 // label is chosen once at spawn time so it stays consistent for the full pass.
-func makeBannerPlane(label string, tick int) ([]string, tcell.Color, tcell.Color) {
+func makeBannerPlane(label string, tick int) ([]string, Color, Color) {
 	// Spinning propeller: 4-frame cycle  | / - \
 	propFrames := []string{" | ", " / ", " - ", " \\ "}
 	prop := propFrames[(tick/3)%len(propFrames)]
@@ -203,11 +201,11 @@ func makeBannerPlane(label string, tick int) ([]string, tcell.Color, tcell.Color
 		`           |   |            `,
 		`          _|_ _|_           `,
 	}
-	return rows, tcell.NewRGBColor(255, 215, 50), tcell.NewRGBColor(200, 120, 0)
+	return rows, NewRGBColor(255, 215, 50), NewRGBColor(200, 120, 0)
 }
 
 // bioArtLines dispatches to the right generator.
-func bioArtLines(kind, tick int, label string) ([]string, tcell.Color, tcell.Color) {
+func bioArtLines(kind, tick int, label string) ([]string, Color, Color) {
 	switch kind {
 	case 0:
 		return makeDNAHelix(tick)
@@ -272,16 +270,16 @@ func (bg *Background) buildStars() {
 		occupied[key] = true
 
 		char := starChars[bg.rng.Intn(len(starChars))]
-		var col tcell.Color
+		var col Color
 		switch char {
 		case '.':
-			col = tcell.NewRGBColor(80, 80, 100)
+			col = NewRGBColor(80, 80, 100)
 		case '·':
-			col = tcell.NewRGBColor(130, 130, 160)
+			col = NewRGBColor(130, 130, 160)
 		case '*':
-			col = tcell.NewRGBColor(210, 210, 240)
+			col = NewRGBColor(210, 210, 240)
 		case '+':
-			col = tcell.NewRGBColor(190, 210, 255)
+			col = NewRGBColor(190, 210, 255)
 		}
 
 		bg.stars = append(bg.stars, &Star{
@@ -322,16 +320,16 @@ func (bg *Background) Update() {
 			switch bg.rng.Intn(4) {
 			case 0:
 				s.Char = '.'
-				s.Color = tcell.NewRGBColor(70, 70, 90)
+				s.Color = NewRGBColor(70, 70, 90)
 			case 1:
 				s.Char = '·'
-				s.Color = tcell.NewRGBColor(120, 120, 150)
+				s.Color = NewRGBColor(120, 120, 150)
 			case 2:
 				s.Char = '*'
-				s.Color = tcell.NewRGBColor(210, 210, 230)
+				s.Color = NewRGBColor(210, 210, 230)
 			case 3:
 				s.Char = '+'
-				s.Color = tcell.NewRGBColor(180, 200, 240)
+				s.Color = NewRGBColor(180, 200, 240)
 			}
 		}
 	}
@@ -418,19 +416,19 @@ func (bg *Background) Update() {
 }
 
 // Draw renders the starry night sky background.
-func (bg *Background) Draw(s tcell.Screen, t *Terrain) {
-	var skyBG tcell.Color
+func (bg *Background) Draw(s Screen, t *Terrain) {
+	var skyBG Color
 	if bg.theme == "night" {
-		skyBG = tcell.NewRGBColor(0, 0, 8)
+		skyBG = NewRGBColor(0, 0, 8)
 	} else {
-		skyBG = tcell.NewRGBColor(5, 5, 20)
+		skyBG = NewRGBColor(5, 5, 20)
 	}
 
 	// 1. Clear sky down to terrain surface
 	for x := 0; x < bg.width; x++ {
 		surfY := t.GetSurfaceY(x)
 		for y := 0; y < surfY; y++ {
-			s.SetContent(x, y, ' ', nil, tcell.StyleDefault.Background(skyBG))
+			s.SetContent(x, y, ' ', nil, StyleDefault.Background(skyBG))
 		}
 	}
 
@@ -439,7 +437,7 @@ func (bg *Background) Draw(s tcell.Screen, t *Terrain) {
 		if star.X >= 0 && star.X < bg.width {
 			surfY := t.GetSurfaceY(star.X)
 			if star.Y < surfY {
-				style := tcell.StyleDefault.Foreground(star.Color).Background(skyBG)
+				style := StyleDefault.Foreground(star.Color).Background(skyBG)
 				s.SetContent(star.X, star.Y, star.Char, nil, style)
 			}
 		}
@@ -454,18 +452,18 @@ func (bg *Background) Draw(s tcell.Screen, t *Terrain) {
 				surfY := t.GetSurfaceY(tx)
 				if ty >= 0 && ty < surfY {
 					var ch rune
-					var col tcell.Color
+					var col Color
 					if j == 0 {
 						ch = '*'
-						col = tcell.NewRGBColor(255, 255, 255)
+						col = NewRGBColor(255, 255, 255)
 					} else if j < 2 {
 						ch = '+'
-						col = tcell.NewRGBColor(200, 220, 255)
+						col = NewRGBColor(200, 220, 255)
 					} else {
 						ch = '·'
-						col = tcell.NewRGBColor(100, 120, 160)
+						col = NewRGBColor(100, 120, 160)
 					}
-					style := tcell.StyleDefault.Foreground(col).Background(skyBG)
+					style := StyleDefault.Foreground(col).Background(skyBG)
 					s.SetContent(tx, ty, ch, nil, style)
 				}
 			}
@@ -501,7 +499,7 @@ func (bg *Background) Draw(s tcell.Screen, t *Terrain) {
 				if (col+row+bf.ticker/3)%4 == 0 {
 					fg = dimCol
 				}
-				style := tcell.StyleDefault.Foreground(fg).Background(skyBG)
+				style := StyleDefault.Foreground(fg).Background(skyBG)
 				s.SetContent(x, y, ch, nil, style)
 			}
 		}

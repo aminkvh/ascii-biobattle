@@ -3,8 +3,6 @@ package main
 import (
 	"math"
 	"math/rand"
-
-	"github.com/gdamore/tcell/v2"
 )
 
 // Water renders the animated water/river section at the bottom of the screen.
@@ -37,7 +35,7 @@ func (wa *Water) Update() {
 }
 
 // Draw renders water only in columns where the terrain surface dips below startY (valleys).
-func (wa *Water) Draw(s tcell.Screen, t *Terrain) {
+func (wa *Water) Draw(s Screen, t *Terrain) {
 	for x := 0; x < wa.width; x++ {
 		surfY := t.GetSurfaceY(x)
 		if surfY <= wa.startY {
@@ -73,8 +71,8 @@ func (wa *Water) Draw(s tcell.Screen, t *Terrain) {
 				bgG = int32(lerp(40, 10, tVal))
 				bgB = int32(lerp(120, 40, tVal))
 			}
-			fg := tcell.NewRGBColor(fgR, fgG, fgB)
-			bg := tcell.NewRGBColor(bgR, bgG, bgB)
+			fg := NewRGBColor(fgR, fgG, fgB)
+			bg := NewRGBColor(bgR, bgG, bgB)
 
 			wave := math.Sin(float64(x)*0.18+wa.phase) +
 				math.Sin(float64(x)*0.07-wa.phase*0.7) +
@@ -114,7 +112,7 @@ func (wa *Water) Draw(s tcell.Screen, t *Terrain) {
 				}
 			}
 
-			style := tcell.StyleDefault.Foreground(fg).Background(bg)
+			style := StyleDefault.Foreground(fg).Background(bg)
 			s.SetContent(x, y, ch, nil, style)
 		}
 	}

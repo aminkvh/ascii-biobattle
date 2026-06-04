@@ -3,8 +3,6 @@ package main
 import (
 	"math"
 	"math/rand"
-
-	"github.com/gdamore/tcell/v2"
 )
 
 // UnitState describes what a unit is currently doing.
@@ -302,7 +300,7 @@ func (u *Unit) spriteFrameIndex() int {
 	return 0
 }
 
-func (u *Unit) Draw(s tcell.Screen, t *Terrain) {
+func (u *Unit) Draw(s Screen, t *Terrain) {
 	fi := u.spriteFrameIndex()
 	if fi >= len(u.frames) {
 		fi = 0
@@ -345,7 +343,7 @@ func (u *Unit) Draw(s tcell.Screen, t *Terrain) {
 	u.drawHealthBar(s, px, py-1, frame.Width())
 }
 
-func (u *Unit) drawHealthBar(s tcell.Screen, x, y, width int) {
+func (u *Unit) drawHealthBar(s Screen, x, y, width int) {
 	if y < 0 {
 		return
 	}
@@ -364,14 +362,14 @@ func (u *Unit) drawHealthBar(s tcell.Screen, x, y, width int) {
 		filled = barWidth
 	}
 
-	var hpFG tcell.Color
+	var hpFG Color
 	switch {
 	case pct > 0.6:
-		hpFG = tcell.NewRGBColor(50, 220, 50) // green
+		hpFG = NewRGBColor(50, 220, 50) // green
 	case pct > 0.3:
-		hpFG = tcell.NewRGBColor(220, 180, 0) // yellow/orange
+		hpFG = NewRGBColor(220, 180, 0) // yellow/orange
 	default:
-		hpFG = tcell.NewRGBColor(220, 30, 30) // red
+		hpFG = NewRGBColor(220, 30, 30) // red
 	}
 
 	for i := 0; i < barWidth; i++ {
@@ -380,107 +378,107 @@ func (u *Unit) drawHealthBar(s tcell.Screen, x, y, width int) {
 			continue
 		}
 		var ch rune
-		var col tcell.Color
+		var col Color
 		if i < filled {
 			ch = '■' // small solid block
 			col = hpFG
 		} else {
 			ch = '·' // small dot
-			col = tcell.NewRGBColor(60, 60, 60)
+			col = NewRGBColor(60, 60, 60)
 		}
-		style := tcell.StyleDefault.Foreground(col).Background(tcell.ColorBlack)
+		style := StyleDefault.Foreground(col).Background(ColorBlack)
 		s.SetContent(cx, y, ch, nil, style)
 	}
 }
 
 // charStyle assigns a neon colour to each character based on which unit type
 // and where the character sits in the sprite (armour, face, legs, etc.)
-func (u *Unit) charStyle(ch rune, row, totalRows int) tcell.Style {
-	bg := tcell.ColorBlack
+func (u *Unit) charStyle(ch rune, row, totalRows int) Style {
+	bg := ColorBlack
 
 	if !u.isRobot {
 		// ── Knight: silver armour with blue shield highlights ──────
-		var fg tcell.Color
+		var fg Color
 		switch {
 		case row <= 2:
 			// Visor and helmet
 			if ch == '/' || ch == '\\' || ch == 'V' || ch == '_' {
-				fg = tcell.NewRGBColor(210, 210, 225) // silver helm
+				fg = NewRGBColor(210, 210, 225) // silver helm
 			} else {
-				fg = tcell.NewRGBColor(240, 240, 255)
+				fg = NewRGBColor(240, 240, 255)
 			}
 		case row <= 3:
-			fg = tcell.NewRGBColor(170, 175, 190) // pauldrons / neck
+			fg = NewRGBColor(170, 175, 190) // pauldrons / neck
 		case row <= 6:
 			// Chest armor: steel chest plate with blue shield highlights
 			if ch == '#' || ch == '[' || ch == ']' {
-				fg = tcell.NewRGBColor(65, 135, 245) // bright blue shield highlights
+				fg = NewRGBColor(65, 135, 245) // bright blue shield highlights
 			} else {
-				fg = tcell.NewRGBColor(180, 185, 200) // steel armor
+				fg = NewRGBColor(180, 185, 200) // steel armor
 			}
 		case row <= 8:
-			fg = tcell.NewRGBColor(160, 165, 185) // silver thighs / knees
+			fg = NewRGBColor(160, 165, 185) // silver thighs / knees
 		default:
-			fg = tcell.NewRGBColor(130, 135, 150) // silver feet
+			fg = NewRGBColor(130, 135, 150) // silver feet
 		}
 
 		// Hit flash (even ticks during hit)
 		if u.state == StateHit && u.hitTimer%2 == 0 {
-			fg = tcell.NewRGBColor(255, 100, 100)
+			fg = NewRGBColor(255, 100, 100)
 		}
 
 		// Blue lightsaber glow (neon blue)
 		if ch == '=' || ch == '>' {
-			fg = tcell.NewRGBColor(0, 160, 255) // bright blue saber blade
+			fg = NewRGBColor(0, 160, 255) // bright blue saber blade
 		}
 		if ch == '/' && row >= 4 && row <= 7 {
-			fg = tcell.NewRGBColor(0, 160, 255) // diagonal blue saber blade in walk/defend
+			fg = NewRGBColor(0, 160, 255) // diagonal blue saber blade in walk/defend
 		}
 
-		return tcell.StyleDefault.Foreground(fg).Background(bg)
+		return StyleDefault.Foreground(fg).Background(bg)
 	}
 
 	// ── Robot: red/orange core with metallic limbs ────────────────
-	var fg tcell.Color
+	var fg Color
 	switch {
 	case row <= 2:
 		// Head and visor
 		if ch == 'o' {
-			fg = tcell.NewRGBColor(255, 120, 0) // orange glowing sensors
+			fg = NewRGBColor(255, 120, 0) // orange glowing sensors
 		} else if ch == 'X' {
-			fg = tcell.NewRGBColor(255, 60, 60) // red cooling core
+			fg = NewRGBColor(255, 60, 60) // red cooling core
 		} else {
-			fg = tcell.NewRGBColor(180, 45, 45) // red plating
+			fg = NewRGBColor(180, 45, 45) // red plating
 		}
 	case row <= 3:
-		fg = tcell.NewRGBColor(120, 120, 130) // shoulder mounts (steel)
+		fg = NewRGBColor(120, 120, 130) // shoulder mounts (steel)
 	case row <= 6:
 		// Chest and core glow
 		if ch == '#' {
-			fg = tcell.NewRGBColor(255, 70, 0) // bright orange/red energy core
+			fg = NewRGBColor(255, 70, 0) // bright orange/red energy core
 		} else if ch == '[' || ch == ']' {
-			fg = tcell.NewRGBColor(110, 110, 120) // arm steel plates
+			fg = NewRGBColor(110, 110, 120) // arm steel plates
 		} else {
-			fg = tcell.NewRGBColor(150, 35, 35) // crimson plating
+			fg = NewRGBColor(150, 35, 35) // crimson plating
 		}
 	case row <= 9:
-		fg = tcell.NewRGBColor(120, 30, 30) // red/crimson legs
+		fg = NewRGBColor(120, 30, 30) // red/crimson legs
 	default:
-		fg = tcell.NewRGBColor(90, 90, 100) // metallic feet
+		fg = NewRGBColor(90, 90, 100) // metallic feet
 	}
 
 	// Hit flash
 	if u.state == StateHit && u.hitTimer%2 == 0 {
-		fg = tcell.NewRGBColor(255, 255, 50) // bright yellow flash
+		fg = NewRGBColor(255, 255, 50) // bright yellow flash
 	}
 
 	// Red lightsaber glow (neon red)
 	if ch == '=' || ch == '<' {
-		fg = tcell.NewRGBColor(255, 30, 30) // glowing red saber blade
+		fg = NewRGBColor(255, 30, 30) // glowing red saber blade
 	}
 	if ch == '/' && row >= 4 && row <= 7 {
-		fg = tcell.NewRGBColor(255, 30, 30) // diagonal red saber blade in walk/defend
+		fg = NewRGBColor(255, 30, 30) // diagonal red saber blade in walk/defend
 	}
 
-	return tcell.StyleDefault.Foreground(fg).Background(bg)
+	return StyleDefault.Foreground(fg).Background(bg)
 }

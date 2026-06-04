@@ -3,8 +3,6 @@ package main
 import (
 	"math"
 	"math/rand"
-
-	"github.com/gdamore/tcell/v2"
 )
 
 // ParticleType enumerates the visual effect types.
@@ -24,7 +22,7 @@ type Particle struct {
 	vx, vy  float64
 	life    int
 	maxLife int
-	color   tcell.Color
+	color   Color
 	ch      rune
 
 	// For lasers: start + end point
@@ -47,7 +45,7 @@ func (p *Particle) Update() {
 	}
 }
 
-func (p *Particle) Draw(s tcell.Screen) {
+func (p *Particle) Draw(s Screen) {
 	if p.life <= 0 {
 		return
 	}
@@ -65,19 +63,19 @@ func (p *Particle) Draw(s tcell.Screen) {
 	}
 }
 
-func (p *Particle) drawPoint(s tcell.Screen, sw, sh int) {
+func (p *Particle) drawPoint(s Screen, sw, sh int) {
 	x, y := int(p.x), int(p.y)
 	if x < 0 || x >= sw || y < 0 || y >= sh {
 		return
 	}
 	_, _, curStyle, _ := s.GetContent(x, y)
 	_, bg, _ := curStyle.Decompose()
-	style := tcell.StyleDefault.Foreground(p.color).Background(bg)
+	style := StyleDefault.Foreground(p.color).Background(bg)
 	s.SetContent(x, y, p.ch, nil, style)
 }
 
 // drawExplosion renders a radial burst that expands then fades.
-func (p *Particle) drawExplosion(s tcell.Screen, sw, sh int) {
+func (p *Particle) drawExplosion(s Screen, sw, sh int) {
 	age := float64(p.maxLife-p.life) / float64(p.maxLife)
 	radius := age * 5.0
 
@@ -101,7 +99,7 @@ func (p *Particle) drawExplosion(s tcell.Screen, sw, sh int) {
 		ch = '.'
 		r, g, b = 80, 20, 0
 	}
-	col := tcell.NewRGBColor(r, g, b)
+	col := NewRGBColor(r, g, b)
 
 	// Draw a rough circle of characters
 	steps := 20
@@ -112,7 +110,7 @@ func (p *Particle) drawExplosion(s tcell.Screen, sw, sh int) {
 		if cx >= 0 && cx < sw && cy >= 0 && cy < sh {
 			_, _, curStyle, _ := s.GetContent(cx, cy)
 			_, bg, _ := curStyle.Decompose()
-			style := tcell.StyleDefault.Foreground(col).Background(bg)
+			style := StyleDefault.Foreground(col).Background(bg)
 			s.SetContent(cx, cy, ch, nil, style)
 		}
 	}
@@ -121,13 +119,13 @@ func (p *Particle) drawExplosion(s tcell.Screen, sw, sh int) {
 	if cx >= 0 && cx < sw && cy >= 0 && cy < sh {
 		_, _, curStyle, _ := s.GetContent(cx, cy)
 		_, bg, _ := curStyle.Decompose()
-		style := tcell.StyleDefault.Foreground(col).Background(bg)
+		style := StyleDefault.Foreground(col).Background(bg)
 		s.SetContent(cx, cy, ch, nil, style)
 	}
 }
 
 // drawLaser draws a Bresenham line between (x,y) and (x2,y2).
-func (p *Particle) drawLaser(s tcell.Screen, sw, sh int) {
+func (p *Particle) drawLaser(s Screen, sw, sh int) {
 	x0, y0 := int(p.x), int(p.y)
 	x1, y1 := int(p.x2), int(p.y2)
 
@@ -147,7 +145,7 @@ func (p *Particle) drawLaser(s tcell.Screen, sw, sh int) {
 	r := int32(255)
 	g := int32(30 + frac*100)
 	b := int32(0)
-	laserCol := tcell.NewRGBColor(r, g, b)
+	laserCol := NewRGBColor(r, g, b)
 
 	x, y := x0, y0
 	for {
@@ -161,7 +159,7 @@ func (p *Particle) drawLaser(s tcell.Screen, sw, sh int) {
 			}
 			_, _, curStyle, _ := s.GetContent(x, y)
 			_, bg, _ := curStyle.Decompose()
-			style := tcell.StyleDefault.Foreground(laserCol).Background(bg)
+			style := StyleDefault.Foreground(laserCol).Background(bg)
 			s.SetContent(x, y, rune(ch), nil, style)
 		}
 		if x == x1 && y == y1 {
@@ -213,19 +211,19 @@ func NewSparkParticle(x, y float64, isRobot bool, rng *rand.Rand) *Particle {
 		ch = '·'
 	}
 
-	var col tcell.Color
+	var col Color
 	if isRobot {
 		// Red sparks (Robot lightsaber)
 		r := int32(220 + rng.Intn(35))
 		g := int32(rng.Intn(60))
 		b := int32(rng.Intn(30))
-		col = tcell.NewRGBColor(r, g, b)
+		col = NewRGBColor(r, g, b)
 	} else {
 		// Blue sparks (Knight lightsaber)
 		r := int32(rng.Intn(30))
 		g := int32(120 + rng.Intn(80))
 		b := int32(220 + rng.Intn(35))
-		col = tcell.NewRGBColor(r, g, b)
+		col = NewRGBColor(r, g, b)
 	}
 
 	return &Particle{
@@ -263,7 +261,7 @@ func NewRainParticle(x float64, rng *rand.Rand) *Particle {
 		vy:      1.2 + rng.Float64()*0.8,
 		life:    20 + rng.Intn(20),
 		maxLife: 40,
-		color:   tcell.NewRGBColor(60, 100, 200),
+		color:   NewRGBColor(60, 100, 200),
 		ch:      '|',
 	}
 }

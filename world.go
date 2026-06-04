@@ -3,8 +3,6 @@ package main
 import (
 	"math/rand"
 	"time"
-
-	"github.com/gdamore/tcell/v2"
 )
 
 // World is the root state container. It holds all subsystems and orchestrates
@@ -137,7 +135,7 @@ func (w *World) Update() {
 	}
 }
 
-func (w *World) Draw(s tcell.Screen) {
+func (w *World) Draw(s Screen) {
 	// Layer order: background → terrain → water → units → particles → HUD
 	w.bg.Draw(s, w.terrain)
 	w.terrain.Draw(s)
