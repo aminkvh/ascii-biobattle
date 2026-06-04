@@ -1,5 +1,0 @@
-#!/bin/bash
-# Wrapper script to run ascii-biobattle inside xscreensaver using xterm
-# Ignore xscreensaver arguments (like -root) and run inside the provided window ID
-
-exec xterm -into "$XSCREENSAVER_WINDOW" -geometry 132x40 +sb -b 0 -e /usr/local/bin/ascii-biobattle --theme night
